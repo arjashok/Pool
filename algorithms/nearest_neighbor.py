@@ -48,6 +48,7 @@ def nearest_neighbor(distance_matrix):
                     nearest_stop = stop
                     nearest_dist = dist
 
+        # move driver to current nearest stop, add this stop to the order
         driver = nearest_stop
         order.append(driver)
         visited.add(driver)
@@ -56,7 +57,7 @@ def nearest_neighbor(distance_matrix):
     order.append(destination)
     return order
 
-coordinates = [[0, 0], [2, 0], [4,4], [4, 1], [1,1]]
+coordinates = [[4,4], [4,3], [2,4], [0,0], [2,2]]
 distance_matrix = create_distance_matrix(coordinates)
 print(distance_matrix)
 check = nearest_neighbor(distance_matrix)
