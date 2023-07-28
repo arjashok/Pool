@@ -1,16 +1,33 @@
-import math
+"""
+    This file calculates the nearest neighbors given an n^2 matrix of distances
+    between each person.
+"""
 
-def distance(p1, p2):
-    # in this case, we could replace the distance formula with an Google Maps API call
-    # not sure how to factor rest of constraints as of rn
-    return math.sqrt((p2[0] - p1[0]) ** 2 + (p2[1] - p1[1]) ** 2)
+# ------ Environment Setup ------ #
+import math                         # distance calculations
+import numpy as np                  # array manipulation
 
-def create_distance_matrix(coordinates):
-    # rn i am assuming NON-SYMMETRY in distance matrix
-    # that is, the distance to go from a to b may not be the exact same as the distance to go from b to a
-    # makes it more realistic, for instance suppose a highway is closed one way but not the other
-    # however, API calls would currently be n(n-1)
-    # assuming symmetry, API calls become n(n-1)/2
+
+# ------ Auxiliary Functions ------ #
+"""
+    Temporary distance formula that relies on direct distance rather than time
+    to drive the route between waypoints.
+
+    This will eventually be replaced with a Google Maps API call, but for now
+    we use this formula.
+"""
+def distance(p1: tuple, p2: tuple) -> float:
+    # return Euclidean distance #
+    return math.dist(p1, p2)
+
+
+"""
+    Assumed non-symmetry for distance (i.e weight, time between waypoints) to
+    account for differing traffic levels, closures, etc. in the future. API
+    calls will be n(n - 1) ==> O(n^2), but with symmetry they would become
+    n(n - 1) / 2 ==> O(n^2).
+"""
+def create_distance_matrix(coordinates: list) -> list:
     matrix = []
     n = len(coordinates)
     for i in range(n):
@@ -23,6 +40,17 @@ def create_distance_matrix(coordinates):
         matrix.append(row)
     return matrix
 
+
+"""
+    Create a list of randomly generated coordinates, assuming within a certain
+    radius from one another.
+"""
+
+
+
+# ------ Nearest Neighbors Calculation ------ #
+"""
+"""
 def nearest_neighbor(distance_matrix):
     # roughly O(n^2) runtime, lmk if u guys have ideas to optimize
     num_stops = len(distance_matrix)
@@ -48,7 +76,6 @@ def nearest_neighbor(distance_matrix):
                     nearest_stop = stop
                     nearest_dist = dist
 
-        # move driver to current nearest stop, add this stop to the order
         driver = nearest_stop
         order.append(driver)
         visited.add(driver)
@@ -57,9 +84,13 @@ def nearest_neighbor(distance_matrix):
     order.append(destination)
     return order
 
-coordinates = [[4,4], [4,3], [2,4], [0,0], [2,2]]
-distance_matrix = create_distance_matrix(coordinates)
-print(distance_matrix)
-check = nearest_neighbor(distance_matrix)
-print(check)
+
+# ------ Test Script ------ #
+if __name__ == "__main__":
+    # build random coords #
+    coordinates = [[0, 0], [2, 0], [4,4], [4, 1], [1,1]]
+    distance_matrix = create_distance_matrix(coordinates)
+    print(distance_matrix)
+    check = nearest_neighbor(distance_matrix)
+    print(check)
 
