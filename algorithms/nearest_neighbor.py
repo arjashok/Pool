@@ -7,10 +7,10 @@
 import math                         # distance calculations (temporary)
 import pandas as pd                 # database (temporary)
 import numpy as np                  # array manipulation
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt     # visualizing path
 
 
-# ------ Auxiliary Functions ------ #
+# ------ Auxiliary Functions for Distance ------ #
 """
     Temporary distance formula that relies on direct distance rather than time
     to drive the route between waypoints.
@@ -61,6 +61,7 @@ def create_distance_matrix(coordinates: np.ndarray) -> np.ndarray:
     # return distance_matrix
 
 
+# ------ Auxiliary Functions for Testing ------ #
 """
     Create a list of randomly generated coordinates, assuming within a certain
     radius from one another. Since coordinates are domained as follows:
@@ -82,26 +83,46 @@ def rand_coordinates(num_coords: int) -> np.ndarray:
     # return zipped array
     return np.array(list(zip(x_arr, y_arr)))
 
-def visualize_path(coordinates, order_indices):
+
+"""
+    Visualizes the path using a basic 
+"""
+def visualize_path(coordinates: np.ndarray, order_indices: list):
+    # setup #
+    # order coordinates by path order
     ordered_coordinates = [coordinates[i] for i in order_indices]
+
+    # extract values
     x_values, y_values = zip(*ordered_coordinates)
+
+    # plotting #
+    # setup plot & points
     plt.figure(figsize=(8, 6))
     plt.plot(x_values, y_values, marker='o', linestyle='-', color='b', markersize=8)
+
+    # labels
     plt.text(x_values[0], y_values[0], 'Start', ha='right', va='bottom', fontsize=12, weight='bold')
     plt.text(x_values[-1], y_values[-1], 'End', ha='left', va='top', fontsize=12, weight='bold')
     plt.xlabel('X-coordinate')
     plt.ylabel('Y-coordinate')
     plt.title('Path Visualization')
     plt.grid(True)
+
+    # show plot & save
+    plt.savefig("../datasets/path.png", dpi=100)
     plt.show()
 
+
+# ------ Auxiliary Functions for Driver Selection ------ #
+def driver_weight():
+    pass
 
 # ------ Nearest Neighbors Calculation ------ #
 """
     Uses a heuristic to calculate who the driver should be within each cluster
     and therefore what the order of pickup should be (optimally).
 """
-def nearest_neighbor(distance_matrix):
+def nearest_neighbor(distance_matrix: np.ndarray) -> list:
     # roughly O(n^2) runtime, lmk if u guys have ideas to optimize
     num_stops = len(distance_matrix)
     destination = num_stops - 1
@@ -136,7 +157,7 @@ def nearest_neighbor(distance_matrix):
 
 # ------ Test Script ------ #
 if __name__ == "__main__":
-    coordinates = rand_coordinates(5)
+    coordinates = rand_coordinates(100)
     distance_matrix = create_distance_matrix(coordinates)
     check = nearest_neighbor(distance_matrix)
     print(coordinates)
