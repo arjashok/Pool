@@ -29,17 +29,33 @@ def distance(p1: tuple, p2: tuple) -> float:
     n(n - 1) / 2 ==> O(n^2).
 """
 def create_distance_matrix(coordinates: np.ndarray) -> np.ndarray:
+    # setup
     matrix = []
     n = len(coordinates)
+
+    # apply distance
     for i in range(n):
         row = [0] * n
         for j in range(n):
-            if i == j:
-                continue
             dist = distance(coordinates[i], coordinates[j])
             row[j] = dist
         matrix.append(row)
-    return matrix
+
+    # return 2D
+    return np.array(matrix)
+
+    # # somehow this is more inefficient so wtf
+    # # setup #
+    # N = coordinates.shape[0]
+    # distance_matrix = np.zeros((N, N))
+
+    # for i in range(N):
+    #     for j in range(N):
+    #         if i == j:
+    #             continue
+    #         distance_matrix[i, j] = distance(coordinates[i], coordinates[j])
+
+    # return distance_matrix
 
 
 """
@@ -105,9 +121,9 @@ def nearest_neighbor(distance_matrix):
 
 # ------ Test Script ------ #
 if __name__ == "__main__":
-    coordinates = rand_coordinates(1000)
+    coordinates = rand_coordinates(5000)
     distance_matrix = create_distance_matrix(coordinates)
-    check = nearest_neighbor(distance_matrix)
+    # check = nearest_neighbor(distance_matrix)
     # print(distance_matrix)
     # print(check)
 
