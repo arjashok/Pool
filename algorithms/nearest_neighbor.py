@@ -84,12 +84,11 @@ def rand_coordinates(num_coords: int) -> np.ndarray:
 
 def visualize_path(coordinates, order_indices):
     ordered_coordinates = [coordinates[i] for i in order_indices]
-
     x_values, y_values = zip(*ordered_coordinates)
-
     plt.figure(figsize=(8, 6))
     plt.plot(x_values, y_values, marker='o', linestyle='-', color='b', markersize=8)
-
+    plt.text(x_values[0], y_values[0], 'Start', ha='right', va='bottom', fontsize=12, weight='bold')
+    plt.text(x_values[-1], y_values[-1], 'End', ha='left', va='top', fontsize=12, weight='bold')
     plt.xlabel('X-coordinate')
     plt.ylabel('Y-coordinate')
     plt.title('Path Visualization')
