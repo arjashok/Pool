@@ -4,7 +4,8 @@
 """
 
 # ------ Environment Setup ------ #
-import math                         # distance calculations
+import math                         # distance calculations (temporary)
+import pandas as pd                 # database (temporary)
 import numpy as np                  # array manipulation
 
 
@@ -27,7 +28,7 @@ def distance(p1: tuple, p2: tuple) -> float:
     calls will be n(n - 1) ==> O(n^2), but with symmetry they would become
     n(n - 1) / 2 ==> O(n^2).
 """
-def create_distance_matrix(coordinates: list) -> list:
+def create_distance_matrix(coordinates: np.ndarray) -> np.ndarray:
     matrix = []
     n = len(coordinates)
     for i in range(n):
@@ -43,13 +44,30 @@ def create_distance_matrix(coordinates: list) -> list:
 
 """
     Create a list of randomly generated coordinates, assuming within a certain
-    radius from one another.
+    radius from one another. Since coordinates are domained as follows:
+        latitude: [-90, 90]
+        longitude: [-180, 180]
+    We will be using a multiplier to artifically boost range while maintaing a
+    static variable type of `float`. This multiplier is 10 for now since
+    coordinates only need 6 decimals of precision to be very accurate, while
+    floats in python can hold up to 8 digits of precision.
 """
+def rand_coordinates(num_coords: int) -> np.ndarray:
+    # setup
+    MULTIPLIER = 10
 
+    # random x & y
+    x_arr = np.random.uniform(-90 * MULTIPLIER, 90 * MULTIPLIER, num_coords)
+    y_arr = np.random.uniform(-180 * MULTIPLIER, 180 * MULTIPLIER, num_coords)
+
+    # return zipped array
+    return np.array(list(zip(x_arr, y_arr)))
 
 
 # ------ Nearest Neighbors Calculation ------ #
 """
+    Uses a heuristic to calculate who the driver should be within each cluster
+    and therefore what the order of pickup should be (optimally).
 """
 def nearest_neighbor(distance_matrix):
     # roughly O(n^2) runtime, lmk if u guys have ideas to optimize
@@ -87,10 +105,9 @@ def nearest_neighbor(distance_matrix):
 
 # ------ Test Script ------ #
 if __name__ == "__main__":
-    # build random coords #
-    coordinates = [[0, 0], [2, 0], [4,4], [4, 1], [1,1]]
+    coordinates = rand_coordinates(1000)
     distance_matrix = create_distance_matrix(coordinates)
-    print(distance_matrix)
     check = nearest_neighbor(distance_matrix)
-    print(check)
+    # print(distance_matrix)
+    # print(check)
 
