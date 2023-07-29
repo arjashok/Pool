@@ -7,6 +7,7 @@
 import math                         # distance calculations (temporary)
 import pandas as pd                 # database (temporary)
 import numpy as np                  # array manipulation
+import matplotlib.pyplot as plt
 
 
 # ------ Auxiliary Functions ------ #
@@ -37,6 +38,8 @@ def create_distance_matrix(coordinates: np.ndarray) -> np.ndarray:
     for i in range(n):
         row = [0] * n
         for j in range(n):
+            if i == j:
+                continue
             dist = distance(coordinates[i], coordinates[j])
             row[j] = dist
         matrix.append(row)
@@ -79,6 +82,20 @@ def rand_coordinates(num_coords: int) -> np.ndarray:
     # return zipped array
     return np.array(list(zip(x_arr, y_arr)))
 
+def visualize_path(coordinates, order_indices):
+    ordered_coordinates = [coordinates[i] for i in order_indices]
+
+    x_values, y_values = zip(*ordered_coordinates)
+
+    plt.figure(figsize=(8, 6))
+    plt.plot(x_values, y_values, marker='o', linestyle='-', color='b', markersize=8)
+
+    plt.xlabel('X-coordinate')
+    plt.ylabel('Y-coordinate')
+    plt.title('Path Visualization')
+    plt.grid(True)
+    plt.show()
+
 
 # ------ Nearest Neighbors Calculation ------ #
 """
@@ -91,7 +108,6 @@ def nearest_neighbor(distance_matrix):
     destination = num_stops - 1
     
     # driver must be the furthest from destination
-    # peep the lambda function
     driver = max(range(num_stops - 1), key=lambda stop: distance_matrix[stop][destination])
 
     order = [driver]
@@ -121,9 +137,9 @@ def nearest_neighbor(distance_matrix):
 
 # ------ Test Script ------ #
 if __name__ == "__main__":
-    coordinates = rand_coordinates(5000)
+    coordinates = rand_coordinates(5)
     distance_matrix = create_distance_matrix(coordinates)
-    # check = nearest_neighbor(distance_matrix)
-    # print(distance_matrix)
-    # print(check)
-
+    check = nearest_neighbor(distance_matrix)
+    print(coordinates)
+    print(check)
+    visualize_path(coordinates, check)
