@@ -10,6 +10,25 @@ import numpy as np                  # array manipulation
 import matplotlib.pyplot as plt     # visualizing path
 
 
+# ------ Wrapped Function ------ #
+"""
+    Final function that wraps all the auxiliary functions into one simple call
+    that returns driver name as a `str` and order of pickup as a `list`. One
+    wrapper function reduces the number of redundant calls we would have to
+    make for loading data.
+"""
+def driver_selection(cluster: list) -> tuple[str, list]:
+    # load data #
+    firebase_df = pd.read_parquet(
+        '../datasets/firebase.parquet',
+        engine='fastparquet'
+    )
+
+    
+    # push wrapped calls #
+
+
+
 # ------ Auxiliary Functions for Distance ------ #
 """
     Temporary distance formula that relies on direct distance rather than time
@@ -95,6 +114,7 @@ def visualize_path(coordinates: np.ndarray, order_indices: list):
     # extract values
     x_values, y_values = zip(*ordered_coordinates)
 
+
     # plotting #
     # setup plot & points
     plt.figure(figsize=(8, 6))
@@ -114,8 +134,34 @@ def visualize_path(coordinates: np.ndarray, order_indices: list):
 
 
 # ------ Auxiliary Functions for Driver Selection ------ #
-def driver_weight():
-    pass
+"""
+    Given a narrowed dataframe of only the relevant driver rows, this utility
+    calculates the final driver weights according to the formula we have custom
+    derived for this purpose.
+
+    The final weights are meant to be applied as a proportional constant to the
+    distance for the paths calculated for each potential driver. For
+    non-drivers, this proportion will be `inf` since the lower the proportion,
+    the lower the total "cost" is deemed to be and therefoer the higher the
+    favorability to be driver is.
+"""
+def driver_weights(driver_data: pd.DataFrame) -> np.ndarray:
+    # setup #
+    # constants
+    num_drivers = driver_data.shape[0]
+
+    # formula variables
+    alpha = np.array([1] * num_drivers)                     # constant multiplier
+    gas_mileage = 1 / driver_data['gas_mileage']            # miles per gallon
+    preference = driver_data['pref_to_drive']               # driving preference
+    exhaustion = (driver_data['driving_instances'] + 1) \
+                 / (driver_data['num_trips'] + 1)           # driving instances / num trips
+    
+
+
+    # calculations #
+    return 
+
 
 # ------ Nearest Neighbors Calculation ------ #
 """
@@ -157,9 +203,4 @@ def nearest_neighbor(distance_matrix: np.ndarray) -> list:
 
 # ------ Test Script ------ #
 if __name__ == "__main__":
-    coordinates = rand_coordinates(100)
-    distance_matrix = create_distance_matrix(coordinates)
-    check = nearest_neighbor(distance_matrix)
-    print(coordinates)
-    print(check)
-    visualize_path(coordinates, check)
+    driver_selection(cluster=['monkey noah monkey, cococruncher noah, yash, arjun'])
