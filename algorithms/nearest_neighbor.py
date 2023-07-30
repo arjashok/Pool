@@ -148,19 +148,24 @@ def visualize_path(coordinates: np.ndarray, order_indices: list):
 def driver_weights(driver_data: pd.DataFrame) -> np.ndarray:
     # setup #
     # constants
-    num_drivers = driver_data.shape[0]
+    DRIVERS = driver_data.shape[0]
+    MILEAGE = 1
+    RSVP = 1
+    PREF = 1
+    EXHAUSTION = 1
+    ALPHA = MILEAGE * RSVP * PREF * EXHAUSTION
 
     # formula variables
-    alpha = np.array([1] * num_drivers)                     # constant multiplier
-    gas_mileage = 1 / driver_data['gas_mileage']            # miles per gallon
-    preference = driver_data['pref_to_drive']               # driving preference
-    exhaustion = (driver_data['driving_instances'] + 1) \
-                 / (driver_data['num_trips'] + 1)           # driving instances / num trips
+    alpha = np.array([ALPHA] * DRIVERS)                 # constant multiplier
+    gas_mileage = 1 / driver_data['gas_mileage']        # miles per gallon
+    preference = 1 / driver_data['pref_to_drive']       # driving preference
+    exhaustion = (driver_data['trips_driven']) \
+                 / (driver_data['trips_taken'] + 1)     # driving instances / num trips + 1
+    rsvp_time = 1 / driver_data['rsvp_time']            # time to rsvp as response_time / time_to_respond
     
 
-
     # calculations #
-    return 
+    return alpha * gas_mileage * preference * exhaustion * rsvp_time
 
 
 # ------ Nearest Neighbors Calculation ------ #
