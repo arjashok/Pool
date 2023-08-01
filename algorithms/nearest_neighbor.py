@@ -1,6 +1,6 @@
 """
     This file calculates the nearest neighbors given an n^2 matrix of distances
-    between each person.
+    between each person when given a cluster of names.
 """
 
 # ------ Environment Setup ------ #

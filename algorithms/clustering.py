@@ -11,6 +11,11 @@
 
     Clustering will be done without weights, our only goal right now is to
     control distances and reduce the size of the problem for driver selection.
+
+    Distance here will be straight-line Euclidean distance to avoid excessive
+    order n^2 API calls. The results may not always be optimal, but it will
+    minimize miles driven on average and therefore, by some non-constant
+    proportion, time.
 """
 
 # --------------------------------------------------------------------------- #
