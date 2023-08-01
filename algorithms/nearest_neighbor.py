@@ -25,7 +25,7 @@ def driver_selection(cluster: list) -> tuple[str, list]:
     )
 
     
-    # push wrapped calls #
+    # execute wrapped calls #
 
 
 
@@ -104,7 +104,8 @@ def rand_coordinates(num_coords: int) -> np.ndarray:
 
 
 """
-    Visualizes the path using a basic 
+    Visualizes the path using a basic plotting approach. Order is set by the
+    results of the algorithm.
 """
 def visualize_path(coordinates: np.ndarray, order_indices: list):
     # setup #
