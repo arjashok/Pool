@@ -7,10 +7,8 @@ from sklearn.cluster import KMeans
 from scipy.spatial.distance import cdist
 from scipy.optimize import linear_sum_assignment
 import numpy as np
-
-coords = np.array(
-    [(0, 0), (1, 1), (1, 0), (6, 0), (8, 0), (7, 1), (5, 4), (4, 5), (1, 2)]
-)
+from cost_testing import rand_coordinates, visualize_clusters, visualize_path
+from nearest_neighbor import nearest_neighbor, create_distance_matrix
 
 
 def get_even_clusters(X, cluster_size):
@@ -40,7 +38,12 @@ def group(arr, coords, cluster_size):
     return rv
 
 
+coords = rand_coordinates(200)
 print(coords)
-check = get_even_clusters(coords, 3)
-hi = group(check, coords, 3)
+check = get_even_clusters(coords, 5)
+hi = group(check, coords, 5)
 print(hi)
+visualize_clusters(hi)
+dmatrix = create_distance_matrix(hi[0])
+path = nearest_neighbor(dmatrix)
+visualize_path(hi[0], path)

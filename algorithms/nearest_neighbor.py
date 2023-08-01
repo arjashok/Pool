@@ -4,11 +4,12 @@
 """
 
 # ------ Environment Setup ------ #
-import math                                 # distance calculations (temporary)
-import pandas as pd                         # database (temporary)
-import numpy as np                          # array manipulation
-import matplotlib.pyplot as plt             # visualizing path
-from '../utility/cost_testing' import *     # testing the costs & approaches
+import math  # distance calculations (temporary)
+import pandas as pd  # database (temporary)
+import numpy as np  # array manipulation
+import matplotlib.pyplot as plt  # visualizing path
+
+# from '../utility/cost_testing' import *     # testing the costs & approaches
 
 
 # ------ Wrapped Function ------ #
@@ -18,16 +19,13 @@ from '../utility/cost_testing' import *     # testing the costs & approaches
     wrapper function reduces the number of redundant calls we would have to
     make for loading data.
 """
+
+
 def driver_selection(cluster: list) -> tuple[str, list]:
     # load data #
-    firebase_df = pd.read_parquet(
-        '../datasets/firebase.parquet',
-        engine='fastparquet'
-    )
+    firebase_df = pd.read_parquet("../datasets/firebase.parquet", engine="fastparquet")
 
-    
     # execute wrapped calls #
-
 
 
 # ------ Auxiliary Functions for Distance ------ #
@@ -38,6 +36,8 @@ def driver_selection(cluster: list) -> tuple[str, list]:
     This will eventually be replaced with a Google Maps API call, but for now
     we use this formula.
 """
+
+
 def distance(p1: tuple, p2: tuple) -> float:
     # return Euclidean distance #
     return math.dist(p1, p2)
@@ -49,6 +49,8 @@ def distance(p1: tuple, p2: tuple) -> float:
     calls will be n(n - 1) ==> O(n^2), but with symmetry they would become
     n(n - 1) / 2 ==> O(n^2).
 """
+
+
 def create_distance_matrix(coordinates: np.ndarray) -> np.ndarray:
     # setup
     matrix = []
@@ -93,6 +95,8 @@ def create_distance_matrix(coordinates: np.ndarray) -> np.ndarray:
     the lower the total "cost" is deemed to be and therefoer the higher the
     favorability to be driver is.
 """
+
+
 def driver_weights(driver_data: pd.DataFrame) -> np.ndarray:
     # setup #
     # constants
@@ -104,13 +108,15 @@ def driver_weights(driver_data: pd.DataFrame) -> np.ndarray:
     ALPHA = MILEAGE * RSVP * PREF * EXHAUSTION
 
     # formula variables
-    alpha = np.array([ALPHA] * DRIVERS)                 # constant multiplier
-    gas_mileage = 1 / driver_data['gas_mileage']        # miles per gallon
-    preference = 1 / driver_data['pref_to_drive']       # driving preference
-    exhaustion = (driver_data['trips_driven']) \
-                 / (driver_data['trips_taken'] + 1)     # driving instances / num trips + 1
-    rsvp_time = 1 / driver_data['rsvp_time']            # time to rsvp as response_time / time_to_respond
-    
+    alpha = np.array([ALPHA] * DRIVERS)  # constant multiplier
+    gas_mileage = 1 / driver_data["gas_mileage"]  # miles per gallon
+    preference = 1 / driver_data["pref_to_drive"]  # driving preference
+    exhaustion = (driver_data["trips_driven"]) / (
+        driver_data["trips_taken"] + 1
+    )  # driving instances / num trips + 1
+    rsvp_time = (
+        1 / driver_data["rsvp_time"]
+    )  # time to rsvp as response_time / time_to_respond
 
     # calculations #
     return alpha * gas_mileage * preference * exhaustion * rsvp_time
@@ -121,21 +127,25 @@ def driver_weights(driver_data: pd.DataFrame) -> np.ndarray:
     Uses a heuristic to calculate who the driver should be within each cluster
     and therefore what the order of pickup should be (optimally).
 """
+
+
 def nearest_neighbor(distance_matrix: np.ndarray) -> list:
     # roughly O(n^2) runtime, lmk if u guys have ideas to optimize
     num_stops = len(distance_matrix)
     destination = num_stops - 1
-    
+
     # driver must be the furthest from destination
-    driver = max(range(num_stops - 1), key=lambda stop: distance_matrix[stop][destination])
+    driver = max(
+        range(num_stops - 1), key=lambda stop: distance_matrix[stop][destination]
+    )
 
     order = [driver]
     visited = set([driver])
-    
+
     # continue visiting until all stops except destination have been visited
     while len(visited) < num_stops - 1:
         nearest_stop = None
-        nearest_dist = float('inf')
+        nearest_dist = float("inf")
 
         # last index will always be destination, avoid checking this
         for stop in range(num_stops - 1):
@@ -156,4 +166,4 @@ def nearest_neighbor(distance_matrix: np.ndarray) -> list:
 
 # ------ Test Script ------ #
 if __name__ == "__main__":
-    driver_selection(cluster=['monkey noah monkey, cococruncher noah, yash, arjun'])
+    driver_selection(cluster=["monkey noah monkey, cococruncher noah, yash, arjun"])
