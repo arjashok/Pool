@@ -4,9 +4,9 @@
 """
 
 # ------ Environment Setup ------ #
-import numpy as np  # array manipulation
-import matplotlib.pyplot as plt  # visualizing path
-from matplotlib.colors import Normalize  # colors lol
+import numpy as np                          # array manipulation
+import matplotlib.pyplot as plt             # visualizing path
+from matplotlib.colors import Normalize     # colors lol
 
 
 # ------ Auxiliary Functions for Testing ------ #
@@ -20,8 +20,6 @@ from matplotlib.colors import Normalize  # colors lol
     coordinates only need 6 decimals of precision to be very accurate, while
     floats in python can hold up to 8 digits of precision.
 """
-
-
 def rand_coordinates(num_coords: int) -> np.ndarray:
     # setup
     MULTIPLIER = 10
@@ -38,8 +36,6 @@ def rand_coordinates(num_coords: int) -> np.ndarray:
     Visualizes the path using a basic plotting approach. Order is set by the
     results of the algorithm.
 """
-
-
 def visualize_path(coordinates: np.ndarray, order_indices: list):
     # setup #
     # order coordinates by path order
@@ -85,27 +81,27 @@ def visualize_path(coordinates: np.ndarray, order_indices: list):
 """
     Visualizes all the clusters created.
 """
-
-
 def visualize_clusters(clusters: list) -> None:
     # setup #
     # constants
     num_clusters = len(clusters)
 
+    # colors
     cmap = plt.cm.get_cmap("tab10")
     colors = [cmap(i) for i in np.linspace(0, 1, num_clusters)]
+
+    # plotting #
+    # put points
     plt.figure(figsize=(8, 6))
     for i, cluster in enumerate(clusters):
         x, y = zip(*cluster)
         plt.scatter(x, y, color=colors[i], label=f"Cluster {i+1}")
+
+    # labeling
     plt.xlabel("X-axis")
     plt.ylabel("Y-axis")
     plt.title("Clusters Visualization")
     plt.legend()
     plt.grid(True)
+    plt.savefig("../datasets/cluster.png")
     plt.show()
-    # color setup
-    # cmap = plt.get_cmap("inferno")
-    # norm = Normalize(vmin=0, vmax=num_clusters - 1)
-    # values = np.linspace(0, 1, num_clusters)
-    # colors = cmap(norm(values))
