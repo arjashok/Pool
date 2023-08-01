@@ -6,6 +6,7 @@
 # ------ Environment Setup ------ #
 import numpy as np                          # array manipulation
 import matplotlib.pyplot as plt             # visualizing path
+from matplotlib.colors import Normalize     # colors lol
 
 
 # ------ Auxiliary Functions for Testing ------ #
@@ -66,5 +67,18 @@ def visualize_path(coordinates: np.ndarray, order_indices: list):
     Visualizes all the clusters created.
 """
 def visualize_clusters(clusters: list) -> None:
-    
+    # setup #
+    # constants
+    num_clusters = len(clusters)
+
+    # color setup
+    colors = from matplotlib.colors import Normalize
+    cmap = plt.get_cmap('coolwarm')
+
+    # Generate 'n' evenly spaced values from 0 to 1
+    norm = Normalize(vmin=0, vmax=n - 1)
+    values = np.linspace(0, 1, n)
+
+    # Get the corresponding colors from the colormap
+    colors = cmap(norm(values))
 
