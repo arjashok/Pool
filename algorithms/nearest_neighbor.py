@@ -4,11 +4,11 @@
 """
 
 # ------ Environment Setup ------ #
-import math                         # distance calculations (temporary)
-import pandas as pd                 # database (temporary)
-import numpy as np                  # array manipulation
-import matplotlib.pyplot as plt     # visualizing path
-from '../utility/testing_path'
+import math                                 # distance calculations (temporary)
+import pandas as pd                         # database (temporary)
+import numpy as np                          # array manipulation
+import matplotlib.pyplot as plt             # visualizing path
+from '../utility/cost_testing' import *     # testing the costs & approaches
 
 
 # ------ Wrapped Function ------ #
