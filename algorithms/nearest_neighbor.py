@@ -9,6 +9,7 @@ import pandas as pd                     # database (temporary)
 import numpy as np                      # array manipulation
 import matplotlib.pyplot as plt         # visualizing path
 from cost_testing import *              # testing the costs & approaches
+from noah_clustering import *
 
 
 # ------ Wrapped Function ------ #
@@ -122,7 +123,7 @@ def driver_weights(driver_data: pd.DataFrame) -> np.ndarray:
     Uses a heuristic to calculate who the driver should be within each cluster
     and therefore what the order of pickup should be (optimally).
 """
-def nearest_neighbor(distance_matrix: np.ndarray) -> list:
+def nearest_neighbor_order(distance_matrix: np.ndarray) -> list:
     # roughly O(n^2) runtime, lmk if u guys have ideas to optimize
     num_stops = len(distance_matrix)
     destination = num_stops - 1
@@ -157,7 +158,45 @@ def nearest_neighbor(distance_matrix: np.ndarray) -> list:
     order.append(destination)
     return order
 
+# Instead of returning the intended order, return the points in order. Same logic as previous
+def nearest_neighbor(distance_matrix: np.ndarray, coordinates: np.ndarray) -> list:
+    num_stops = len(distance_matrix)
+    destination = num_stops - 1
+    driver = max(
+        range(num_stops - 1),
+        key=lambda stop: distance_matrix[stop][destination]
+    )
+    order = [coordinates[driver]]
+    visited = set([driver])
+    while len(visited) < num_stops - 1:
+        nearest_stop = None
+        nearest_dist = float("inf")
+        for stop in range(num_stops - 1):
+            if stop not in visited:
+                dist = distance_matrix[driver][stop]
+                if dist < nearest_dist:
+                    nearest_stop = stop
+                    nearest_dist = dist
+
+        driver = nearest_stop
+        order.append(coordinates[driver])
+        visited.add(driver)
+    order.append(coordinates[destination])
+    return np.array(order)
+
+def cluster_and_order(coords):
+    clustered = cluster(coords, 5)
+    rv = []
+    for i in clustered:
+        distance_matrix = create_distance_matrix(i)
+        rv.append(nearest_neighbor(distance_matrix, i))
+    return np.array(rv)
+
 
 # ------ Test Script ------ #
 if __name__ == "__main__":
-    driver_selection(cluster=["monkey noah monkey, cococruncher noah, yash, arjun"])
+    coords = rand_coordinates(20)
+    check = cluster_and_order(coords)
+    print(check)
+    for i in check:
+        visualize_path(i)
