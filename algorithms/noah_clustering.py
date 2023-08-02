@@ -50,8 +50,4 @@ def group(arr, coords, cluster_size):
         rv[i].append(coords[idx])
     return np.array(rv)
 
-# Test code
-coords = rand_coordinates(100)
-clustered = cluster(coords, 5)
-print(clustered)
-visualize_clusters(clustered)
+
