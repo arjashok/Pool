@@ -36,11 +36,7 @@ def rand_coordinates(num_coords: int) -> np.ndarray:
     Visualizes the path using a basic plotting approach. Order is set by the
     results of the algorithm.
 """
-def visualize_path(coordinates: np.ndarray, order_indices: list):
-    # setup #
-    # order coordinates by path order
-    ordered_coordinates = [coordinates[i] for i in order_indices]
-
+def visualize_path(ordered_coordinates: np.ndarray):
     # extract values
     x_values, y_values = zip(*ordered_coordinates)
 
