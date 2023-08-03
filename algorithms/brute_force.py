@@ -3,7 +3,7 @@ from cost_testing import *
 import matplotlib.pyplot as plt
 import numpy as np
 import itertools
-from noah_clustering import *
+from corporate_clustering import *
 
 
 
