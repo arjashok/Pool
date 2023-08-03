@@ -50,12 +50,12 @@ from corporate_clustering import *                  # clustering help
 # ------ Dispatch ------ #
 """
     This function dispatches the chosen method and returns the selected driver
-    and the order of pickup given a cluster of coordinates & user IDs.
+    and the order of pickup given a cluster of user IDs.
 """
-def driver_selection(coords: np.ndarray) -> tuple(str, list):
+def driver_selection(user_ids: np.ndarray) -> tuple(str, list):
     # get params #
+    db_users = db_query_users(users = users_ids)
     dist_matrix = create_distance_matrix(coords)
-
     driver_weights = 
 
     # dispatch #
