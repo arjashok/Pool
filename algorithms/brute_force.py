@@ -4,28 +4,26 @@ import matplotlib.pyplot as plt
 import numpy as np
 import itertools
 from corporate_clustering import *
+import time
 
 
 
 def distance(p1, p2):
     return math.dist(p1, p2)
 
-def create_distance_matrix(coordinates: np.ndarray) -> np.ndarray:
-    # setup
+def create_distance_matrix(coordinates):
+    matrix = []
     n = len(coordinates)
 
     # apply distance
-    matrix = np.zeros((n, n))  # Initialize the matrix with zeros
-
     for i in range(n):
+        row = [0] * n
         for j in range(n):
             if i == j:
                 continue
             dist = distance(coordinates[i], coordinates[j])
-            matrix[i, j] = dist
-            matrix[j, i] = dist  # Assign the same value to the symmetric element
-
-    # return 2D
+            row[j] = dist
+        matrix.append(row)
     return matrix
 
 
@@ -50,13 +48,15 @@ def brute_force(coordinates):
             optimal_path = path
     return optimal_path
 
-def cluster_and_order(coordinates):
+def cluster_and_order(coordinates, destination):
     clustered = cluster(coordinates, 5)
+    for i in range(len(clustered)):
+        clustered[i].append(destination)
     rv = []
     for i in clustered:
         path = brute_force(i)
         rv.append([i[idx] for idx in path])
-    return np.array(rv)
+    return rv
 
 def visualize_paths(paths):
     plt.figure()
@@ -73,5 +73,10 @@ def visualize_paths(paths):
     plt.show()
 
 if __name__ == "__main__":
-    coords = rand_coordinates(40)
+    #start_time = time.time()
+    coords = rand_coordinates(21)
+    destination = [0,0]
+    grr = cluster_and_order(coords, destination)
+    #print("--- %s seconds ---" % (time.time() - start_time))
+    visualize_paths(grr)
 
