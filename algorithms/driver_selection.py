@@ -52,7 +52,7 @@ from corporate_clustering import *                  # clustering help
     This function dispatches the chosen method and returns the selected driver
     and the order of pickup given a cluster of user IDs.
 """
-def driver_selection(user_ids: np.ndarray) -> tuple(str, list):
+def driver_selection(user_ids: np.ndarray) -> tuple[str, list]:
     # get params #
     db_users = db_query_users(users=user_ids)
     dist_matrix = create_distance_matrix(coords)
@@ -68,12 +68,12 @@ def driver_selection(user_ids: np.ndarray) -> tuple(str, list):
 
 
 # ------ Brute-Force Permutation ------ #
-def driver_selection_dp(cluster: np.ndarray) -> tuple(str, list):
+def driver_selection_dp(cluster: np.ndarray) -> tuple[str, list]:
     pass
 
 
 # ------ TSP Algo & Reversing ------ #
-def driver_selection_tsp(cluster: np.ndarray) -> tuple(str, list):
+def driver_selection_tsp(cluster: np.ndarray) -> tuple[str, list]:
     pass
 
 
