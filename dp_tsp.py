@@ -34,7 +34,7 @@ def find_path_distance(distance_matrix, indices):
     return rv
     
 
-def brute_force(coordinates):
+def dp_tsp(coordinates):
     distance_matrix = create_distance_matrix(coordinates)
     permutations = itertools.permutations(range(len(coordinates) - 1))
     min_distance = float('inf')
@@ -54,7 +54,7 @@ def cluster_and_order(coordinates, destination):
         clustered[i].append(destination)
     rv = []
     for i in clustered:
-        path = brute_force(i)
+        path = dp_tsp(i)
         rv.append([i[idx] for idx in path])
     return rv
 
