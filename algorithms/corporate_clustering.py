@@ -72,7 +72,7 @@ def group(arr, coords, cluster_size):
     rv = [[] for num in range(num_clusters)]
     for idx, i in enumerate(arr):
         rv[i].append(coords[idx])
-    return np.array(rv)
+    return rv
 
 
 """
