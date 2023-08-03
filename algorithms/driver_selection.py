@@ -2,32 +2,32 @@
     All functionality for selecting a driver from a pre-clustered group of
     drivers.
 
-    Approaches:
-    ::::: Traveling Salesman w/ Cycle, Reversed & Cut :::::
-        TSP from the destination to destination (cycle), remove the duplicate
-        destination node and reverse the order to find the roughly optimized
-        path order. Ensure that the edges from the destination out are
-        weighted while the edges from the person nodes in are 0-weighted such
-        that the weight of the last edge doesn't influence the order of
-        pickup (for the last node, the weight of the edge may affect who is
-        picked up last otherwise, so the furthest driver will be least likely
-        to be the driver, which is usually not optimal).
+    ::::::::::::::::::::::::::::::: Approaches ::::::::::::::::::::::::::::::::
+    # -- Traveling Salesman w/ Cycle, Reversed & Cut -- #
+    TSP from the destination to destination (cycle), remove the duplicate
+    destination node and reverse the order to find the roughly optimized path
+    order. Ensure that the edges from the destination out are weighted while
+    the edges from the person nodes in are 0-weighted such that the weight of
+    the last edge doesn't influence the order of pickup (for the last node, the
+    weight of the edge may affect who is picked up last otherwise, so the
+    furthest driver will be least likely to be the driver, which is usually not
+    optimal).
         
-    ::::: Brute-Force Permutation w/ Dynamic Programming Approach :::::
-        Generating all possible paths and orders and simply choose the path
-        that minimizes the total weight of the path driven. Given that
-        clustering GUARANTEES an O(1) size problem for the >50 case, we can
-        ensure that this appraoch that normally takes O(n!*k) for n nodes and k
-        clusters will be O(k) where k is the number of clusters.
+    # -- Brute-Force Permutation w/ Dynamic Programming Approach -- #
+    Generating all possible paths and orders and simply choose the path that
+    minimizes the total weight of the path driven. Given that clustering
+    GUARANTEES an O(1) size problem for the >50 case, we can ensure that this
+    appraoch that normally takes O(n!*k) for n nodes and k clusters will be
+    O(k) where k is the number of clusters.
 
-    ::::: Nearest Neighbors w/ Heuristics ::::::
-        Uses a heuristic to calculate who the driver should be within each
-        cluster and therefore what the order of pickup should be (optimally).
-        The heuristic used is based on minimizing the number of deviations the
-        driver faces on the way to the destination while picking up people,
-        essentially limiting the distance by virtue of reducing the distance to
-        destination during the pickup process. This is done by selecting the
-        furthest driver from the destination.
+    # -- Nearest Neighbors w/ Heuristics -- #
+    Uses a heuristic to calculate who the driver should be within each cluster
+    and therefore what the order of pickup should be (optimally). The heuristic
+    used is based on minimizing the number of deviations the driver faces on
+    the way to the destination while picking up people, essentially limiting
+    the distance by virtue of reducing the distance to destination during the
+    pickup process. This is done by selecting the furthest driver from the
+    destination.
 """
 
 
