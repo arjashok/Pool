@@ -1,12 +1,11 @@
 """
-    This file calculates the nearest neighbors given an n^2 matrix of distances
-    between each person when given a cluster of names.
+    Utility file that calculates the nearest neighbors given an n^2 matrix of
+    distances between each person when given a cluster of names.
 """
 
 # ------ Environment Setup ------ #
 import numpy as np                          # array manipulation
 import matplotlib.pyplot as plt             # visualizing path
-from matplotlib.colors import Normalize     # colors lol
 
 
 # ------ Auxiliary Functions for Testing ------ #
@@ -36,7 +35,7 @@ def rand_coordinates(num_coords: int) -> np.ndarray:
     Visualizes the path using a basic plotting approach. Order is set by the
     results of the algorithm.
 """
-def visualize_path(ordered_coordinates: np.ndarray):
+def visualize_path(ordered_coordinates: np.ndarray) -> None:
     # extract values
     x_values, y_values = zip(*ordered_coordinates)
 
@@ -101,3 +100,4 @@ def visualize_clusters(clusters: list) -> None:
     plt.grid(True)
     plt.savefig("../datasets/cluster.png")
     plt.show()
+
