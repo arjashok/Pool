@@ -17,7 +17,7 @@ from scipy.spatial.distance import cdist            # Euclidean distance
 from scipy.optimize import linear_sum_assignment    # magic function lol
 import numpy as np                                  # arrays
 from cost_testing import *                          # testing purposes
-from nearest_neighbor import *                      # distance
+from distance import *                              # distance calculations
 
 
 # ------ Clustering ------ #
@@ -48,18 +48,29 @@ def cluster(coords, cluster_size):
         The runtime associated with linear sum assignment is the dominant term
         meaning overall runtime is approx O(n^3).
 """
-def get_even_clusters(X, cluster_size):
-    n_clusters = int(np.ceil(len(X) / cluster_size))
+def get_even_clusters(coords: np.ndarray, cluster_size: int) -> np.ndarray:
+    # clustering #
+    n_clusters = int(np.ceil(len(coords) / cluster_size))
     kmeans = KMeans(n_clusters)
-    kmeans.fit(X)
+    kmeans.fit(coords)
+
+
+    # post-processing #
+    # process centroids
     centers = kmeans.cluster_centers_
     centers = (
-        centers.reshape(-1, 1, X.shape[-1])
+        centers.reshape(-1, 1, coords.shape[-1])
         .repeat(cluster_size, 1)
-        .reshape(-1, X.shape[-1])
+        .reshape(-1, coords.shape[-1])
     )
-    distance_matrix = cdist(X, centers)
+
+    # efficient distance
+    distance_matrix = cdist(coords, centers)
+
+    # magic
     clusters = linear_sum_assignment(distance_matrix)[1] // cluster_size
+    
+    # return results
     return clusters
 
 
@@ -67,12 +78,16 @@ def get_even_clusters(X, cluster_size):
     Uses the information from get_even_clusters to actually cluster the coords
     array.
 """
-def group(arr, coords, cluster_size):
+def group(clusters: np.ndarray, coords, cluster_size):
+    # setup #
     num_clusters = int(np.ceil(len(coords) / cluster_size))
-    rv = [[] for num in range(num_clusters)]
-    for idx, i in enumerate(arr):
-        rv[i].append(coords[idx])
-    return rv
+    groups = [[] for num in range(num_clusters)]
+
+
+    # associate coords w/ people
+    for idx, i in enumerate(clusters):
+        groups[i].append(coords[idx])
+    return groups
 
 
 """
