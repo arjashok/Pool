@@ -1,6 +1,6 @@
 """
-    This function dispatches the corresponding driver selection algorithm as
-    specified.
+    All functionality for selecting a driver from a pre-clustered group of
+    drivers.
 
     Approaches:
     ::::: Traveling Salesman w/ Cycle, Reversed & Cut :::::
@@ -19,6 +19,15 @@
         clustering GUARANTEES an O(1) size problem for the >50 case, we can
         ensure that this appraoch that normally takes O(n!*k) for n nodes and k
         clusters will be O(k) where k is the number of clusters.
+
+    ::::: Nearest Neighbors w/ Heuristics ::::::
+        Uses a heuristic to calculate who the driver should be within each
+        cluster and therefore what the order of pickup should be (optimally).
+        The heuristic used is based on minimizing the number of deviations the
+        driver faces on the way to the destination while picking up people,
+        essentially limiting the distance by virtue of reducing the distance to
+        destination during the pickup process. This is done by selecting the
+        furthest driver from the destination.
 """
 
 
@@ -37,11 +46,30 @@ from cost_testing import *                          # testing purposes
 from corporate_clustering import *                  # clustering help
 
 
+# ------ Dispatch ------ #
+"""
+    This function dispatches the chosen method and returns the selected driver
+    and the order of pickup given a cluster of names.
+"""
+def driver_selection(cluster: np.ndarray) -> tuple(str, list):
+    pass
+
+
 # ------ Brute-Force Permutation ------ #
 
 
 
-# ------ TSP Algo ------ #
+# ------ TSP Algo & Reversing ------ #
+
+
+
+# ------ Nearest Neighbors & Heuristics ------ #
+"""
+    Final, wrapped function for the NN & Heuristics implemnetation.
+"""
+def driver_selection_nn():
+    
+
 
 
 

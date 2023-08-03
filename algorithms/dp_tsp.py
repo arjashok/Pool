@@ -7,25 +7,6 @@ from corporate_clustering import *
 import time
 
 
-def distance(p1, p2):
-    return math.dist(p1, p2)
-
-def create_distance_matrix(coordinates):
-    matrix = []
-    n = len(coordinates)
-
-    # apply distance
-    for i in range(n):
-        row = [0] * n
-        for j in range(n):
-            if i == j:
-                continue
-            dist = distance(coordinates[i], coordinates[j])
-            row[j] = dist
-        matrix.append(row)
-    return matrix
-
-
 def find_path_distance(distance_matrix, indices):
     rv = 0
     for i in range(len(indices) - 1):
