@@ -38,6 +38,7 @@ from scipy.optimize import linear_sum_assignment    # magic function lol
 import numpy as np                                  # arrays
 import itertools                                    # iteration
 from distance import *                              # all distance functionality
+from database import *                              # all database functionality
 
 # temporary, testing
 import matplotlib.pyplot as plt                     # visualizing
@@ -49,17 +50,30 @@ from corporate_clustering import *                  # clustering help
 # ------ Dispatch ------ #
 """
     This function dispatches the chosen method and returns the selected driver
-    and the order of pickup given a cluster of names.
+    and the order of pickup given a cluster of coordinates & user IDs.
 """
-def driver_selection(cluster: np.ndarray) -> tuple(str, list):
-    pass
+def driver_selection(coords: np.ndarray) -> tuple(str, list):
+    # get params #
+    dist_matrix = create_distance_matrix(coords)
+
+    driver_weights = 
+
+    # dispatch #
+    return driver_selection_dp(
+        distance_matrix = dist_matrix,
+        coordinates = coords,
+        weights = driv_weights
+    )
 
 
 # ------ Brute-Force Permutation ------ #
-
+def driver_selection_dp(cluster: np.ndarray) -> tuple(str, list):
+    pass
 
 
 # ------ TSP Algo & Reversing ------ #
+def driver_selection_tsp(cluster: np.ndarray) -> tuple(str, list):
+    pass
 
 
 
@@ -68,9 +82,56 @@ def driver_selection(cluster: np.ndarray) -> tuple(str, list):
     Final, wrapped function for the NN & Heuristics implemnetation.
 """
 def driver_selection_nn():
+    pass
+
+"""
+    Uses a heuristic to calculate who the driver should be within each cluster
+    and therefore what the order of pickup should be (optimally).
+
+    Instead of returning the intended order, return the points in order.
+"""
+def nearest_neighbor(distance_matrix: np.ndarray, coordinates: np.ndarray, weights: np.ndarray) -> list:
+    # setup #
+    # variable declaration
+    num_stops = len(distance_matrix)
+    destination = num_stops - 1
+    weights = driver_weights()
+
+    driver = max(
+        range(num_stops - 1),
+        key=lambda stop: get_dist(distance_matrix, stop, destination * )
+    )
     
+    # setup order tracking
+    order = [coordinates[driver]]
+    visited = set([driver])
+    
+        
+    # find order #
+    # while there are people to be picked up
+    while len(visited) < num_stops - 1:
+        # setup next stop
+        nearest_stop = None
+        nearest_dist = float("inf")
+            
+        # check each stop for nearest
+        for stop in range(num_stops - 1):
+            if stop not in visited:
+                dist = distance_matrix[driver][stop]
+                if dist < nearest_dist:
+                    nearest_stop = stop
+                    nearest_dist = dist
 
+        # store nearest stop & update trackers
+        driver = nearest_stop
+        order.append(coordinates[driver])
+        visited.add(driver)
+    
+    # add destination
+    order.append(coordinates[destination])
 
+    # return final ordering #
+    return np.array(order)
 
 
 # ------ Auxiliary Functions for Selection ------ #
