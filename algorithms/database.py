@@ -9,6 +9,9 @@
         - For operation functions, the input should be a dataframe with user-id
           and any other info that should be modified, and the output should
           always be a boolean for successful versus unsuccesful operation
+    
+    Reference @ database_design.md for the layout of all the databases we will
+    eventually implement.
 """
 
 
