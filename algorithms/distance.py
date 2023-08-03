@@ -1,6 +1,9 @@
 """
     Utility file for all functions relating to distance and distance
-    calculations.
+    calculations. Eventually, we will be replacing the Euclidean distance
+    with API calls to Google Maps in order to provide more accurate times
+    results. Clustering will still rely on Euclidean distance, however, to
+    limit API calls for now.
 """
 
 
@@ -21,6 +24,19 @@ import math                         # distance calculations
     we use this formula.
 """
 def distance(p1: tuple, p2: tuple) -> float:
+    # return Euclidean distance #
+    return math.dist(p1, p2)
+
+
+"""
+    Finalized distance formula that relies on direct distance rather than time
+    to drive the route between waypoints.
+
+    This is for exclusive use in clustering to avoid order n-squared API calls
+    where n is the population size, but in the future we may use API calls for
+    this as well.
+"""
+def cluster_distance(p1: tuple, p2: tuple) -> float:
     # return Euclidean distance #
     return math.dist(p1, p2)
 
