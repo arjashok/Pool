@@ -54,12 +54,13 @@ from corporate_clustering import *                  # clustering help
 """
 def driver_selection(user_ids: np.ndarray) -> tuple(str, list):
     # get params #
-    db_users = db_query_users(users = users_ids)
+    db_users = db_query_users(users=user_ids)
     dist_matrix = create_distance_matrix(coords)
-    driver_weights = 
+    driv_weights = driver_weights(driver_data=db_users)
 
     # dispatch #
-    return driver_selection_dp(
+    # NOTE: for now, nn for testing purposes while this file is in construction
+    return driver_selection_nn(
         distance_matrix = dist_matrix,
         coordinates = coords,
         weights = driv_weights
@@ -76,30 +77,22 @@ def driver_selection_tsp(cluster: np.ndarray) -> tuple(str, list):
     pass
 
 
-
 # ------ Nearest Neighbors & Heuristics ------ #
-"""
-    Final, wrapped function for the NN & Heuristics implemnetation.
-"""
-def driver_selection_nn():
-    pass
-
 """
     Uses a heuristic to calculate who the driver should be within each cluster
     and therefore what the order of pickup should be (optimally).
 
     Instead of returning the intended order, return the points in order.
 """
-def nearest_neighbor(distance_matrix: np.ndarray, coordinates: np.ndarray, weights: np.ndarray) -> list:
+def driver_selection_nn(distance_matrix: np.ndarray, coordinates: np.ndarray, weights: dict) -> list:
     # setup #
     # variable declaration
     num_stops = len(distance_matrix)
     destination = num_stops - 1
-    weights = driver_weights()
 
     driver = max(
         range(num_stops - 1),
-        key=lambda stop: get_dist(distance_matrix, stop, destination * )
+        key=lambda stop: get_dist(distance_matrix, stop, destination) * weights[stop]
     )
     
     # setup order tracking
@@ -130,6 +123,7 @@ def nearest_neighbor(distance_matrix: np.ndarray, coordinates: np.ndarray, weigh
     # add destination
     order.append(coordinates[destination])
 
+
     # return final ordering #
     return np.array(order)
 
@@ -146,7 +140,7 @@ def nearest_neighbor(distance_matrix: np.ndarray, coordinates: np.ndarray, weigh
     the lower the total "cost" is deemed to be and therefoer the higher the
     favorability to be driver is.
 """
-def driver_weights(driver_data: pd.DataFrame) -> np.ndarray:
+def driver_weights(driver_data: pd.DataFrame) -> dict:
     # setup #
     # constants
     DRIVERS = driver_data.shape[0]
@@ -160,13 +154,19 @@ def driver_weights(driver_data: pd.DataFrame) -> np.ndarray:
     alpha = np.array([ALPHA] * DRIVERS)                 # constant multiplier
     gas_mileage = 1 / driver_data["gas_mileage"]        # miles per gallon
     preference = 1 / driver_data["pref_to_drive"]       # driving preference
-    exhaustion = (driver_data["trips_driven"] 
-                  + driver_data["miles_driven"])
+    exhaustion = (driver_data["trips_driven"] \
+                  + driver_data["miles_driven"]) \
                   / (driver_data["trips_taken"] + 1
     )                                                   # driving instances / num trips + 1
     rsvp_time = (
         1 / driver_data["rsvp_time"]
     )                                                   # time to rsvp as response_time / time_to_respond
 
+
     # calculations #
-    return alpha * gas_mileage * preference * exhaustion * rsvp_time
+    driver_coords = driver_data["location-coords"]
+    raw_weights = alpha * gas_mileage * preference * exhaustion * rsvp_time
+    weights = dict(zip(driver_coords, raw_weights))
+
+    return weights
+
