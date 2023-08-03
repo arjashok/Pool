@@ -9,7 +9,7 @@ import pandas as pd                     # database (temporary)
 import numpy as np                      # array manipulation
 import matplotlib.pyplot as plt         # visualizing path
 from cost_testing import *              # testing the costs & approaches
-from noah_clustering import *
+from corporate_clustering import *      # full process
 
 
 # ------ Wrapped Function ------ #
@@ -29,93 +29,7 @@ def driver_selection(cluster: list) -> tuple[str, list]:
     # execute wrapped calls #
 
 
-
-# ------ Auxiliary Functions for Distance ------ #
-"""
-    Temporary distance formula that relies on direct distance rather than time
-    to drive the route between waypoints.
-
-    This will eventually be replaced with a Google Maps API call, but for now
-    we use this formula.
-"""
-def distance(p1: tuple, p2: tuple) -> float:
-    # return Euclidean distance #
-    return math.dist(p1, p2)
-
-
-"""
-    Assumed non-symmetry for distance (i.e weight, time between waypoints) to
-    account for differing traffic levels, closures, etc. in the future. API
-    calls will be n(n - 1) ==> O(n^2), but with symmetry they would become
-    n(n - 1) / 2 ==> O(n^2).
-"""
-def create_distance_matrix(coordinates: np.ndarray) -> np.ndarray:
-    # setup
-    matrix = []
-    n = len(coordinates)
-
-    # apply distance
-    for i in range(n):
-        row = [0] * n
-        for j in range(n):
-            if i == j:
-                continue
-            dist = distance(coordinates[i], coordinates[j])
-            row[j] = dist
-        matrix.append(row)
-
-    # return 2D
-    return np.array(matrix)
-
-    # # somehow this is more inefficient so wtf
-    # # setup #
-    # N = coordinates.shape[0]
-    # distance_matrix = np.zeros((N, N))
-
-    # for i in range(N):
-    #     for j in range(N):
-    #         if i == j:
-    #             continue
-    #         distance_matrix[i, j] = distance(coordinates[i], coordinates[j])
-
-    # return distance_matrix
-
-
 # ------ Auxiliary Functions for Driver Selection ------ #
-"""
-    Given a narrowed dataframe of only the relevant driver rows, this utility
-    calculates the final driver weights according to the formula we have custom
-    derived for this purpose.
-
-    The final weights are meant to be applied as a proportional constant to the
-    distance for the paths calculated for each potential driver. For
-    non-drivers, this proportion will be `inf` since the lower the proportion,
-    the lower the total "cost" is deemed to be and therefoer the higher the
-    favorability to be driver is.
-"""
-def driver_weights(driver_data: pd.DataFrame) -> np.ndarray:
-    # setup #
-    # constants
-    DRIVERS = driver_data.shape[0]
-    MILEAGE = 1
-    RSVP = 1
-    PREF = 1
-    EXHAUSTION = 1
-    ALPHA = MILEAGE * RSVP * PREF * EXHAUSTION
-
-    # formula variables
-    alpha = np.array([ALPHA] * DRIVERS)                 # constant multiplier
-    gas_mileage = 1 / driver_data["gas_mileage"]        # miles per gallon
-    preference = 1 / driver_data["pref_to_drive"]       # driving preference
-    exhaustion = (driver_data["trips_driven"]) / (
-        driver_data["trips_taken"] + 1
-    )                                                   # driving instances / num trips + 1
-    rsvp_time = (
-        1 / driver_data["rsvp_time"]
-    )                                                   # time to rsvp as response_time / time_to_respond
-
-    # calculations #
-    return alpha * gas_mileage * preference * exhaustion * rsvp_time
 
 
 # ------ Nearest Neighbors Calculation ------ #
@@ -184,6 +98,10 @@ def nearest_neighbor(distance_matrix: np.ndarray, coordinates: np.ndarray) -> li
     order.append(coordinates[destination])
     return np.array(order)
 
+
+"""
+    Full process.
+"""
 def cluster_and_order(coords):
     clustered = cluster(coords, 5)
     rv = []
