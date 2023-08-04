@@ -38,7 +38,6 @@ def create_distance_matrix(addresses: np.ndarray) -> np.ndarray:
     return matrix
 
 
-print(get_geo("9367 mediar drive San Ramon"))
 # addys = np.array(
 #     [
 #         "2009 Poinsettia Street San Ramon",
