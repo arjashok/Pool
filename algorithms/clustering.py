@@ -58,14 +58,13 @@
 
 # ----- Environment Setup ----- #
 # static libraries
-from sklearn.cluster import KMeans                  # clustering
-from scipy.spatial.distance import cdist            # Euclidean distance
-from scipy.optimize import linear_sum_assignment    # magic function lol
 import numpy as np                                  # array manipulation
 from distance import *                              # distance calculations
 
-# temporary, testing
-from cost_testing import *                          # testing purposes
+# dependent on algorithm chosen
+from sklearn.cluster import KMeans                  # clustering
+from scipy.spatial.distance import cdist            # Euclidean distance
+from scipy.optimize import linear_sum_assignment    # magic function lol
 
 
 # ------ K-Means & Post-Processing ------ #
@@ -151,6 +150,22 @@ def group(clusters: np.ndarray, coords: np.ndarray, cluster_size: int) -> list:
 
 
 # ----- Clustering via Driver Selection ----- #
+"""
+    Algorithm design to be finalized...
+
+    Will ensure optimized paths within clusters before returning using
+    optimize_path() for each path.
+"""
 def cluster_ds(coords: np.ndarray) -> list:
+    print("incomplete algo LOLOLOLOL")
+    exit(1)
+    pass
+
+
+"""
+    Finds the shortest path given the final cluster & driver selections. This
+    algorithm assumes the first coordinate is the driver.
+"""
+def optimize_path(coords: np.ndarray):
     pass
 

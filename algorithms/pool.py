@@ -56,17 +56,45 @@ def pool(carpool_list: list, destination: tuple) -> dict[str: dict[str: list]]:
 
     # cluster driver selection
     paths = []
-    for i in clusters:
-        path = dp_tsp(i)
-        rv.append([i[idx] for idx in path])
-    return rv
+    for cluster in clusters:
+        user_ids = lookup_userids(cluster)
+        cluster_db = population_db[population_db["user-id"] == user_ids]
+        path = driver_selection(cluster_db)
+        paths.append([cluster[idx] for idx in path])
+
+    # format & return
+    response = format_path(population_db=population_db, coords=paths)
+    return response
 
 
 # ----- Auxiliary Methods for Formatting Output ----- #
 """
     Given a list of coordinates, generates a complete dictionary as defined in
     the schema above for return by the pool algorithm.
+
+    Input:
+    [
+        [(x, y), (x, y), . . .],
+        . . .
+    ]
 """
 def format_path(population_db: pd.DataFrame, coords: list) -> dict:
     pass
+
+
+"""
+    Given a list of coordinates, generates a list of user-ids for use with
+    realigning with the primary key.
+
+    TODO: eventually this should be redundant because we'll need to transfer to
+    using user-id's and lookups to do all coordinates.
+"""
+def lookup_userids(db: pd.DataFrame, coords: list) -> list:
+    # lookup user-id #
+    user_ids = [
+        db.loc[db.index[db["location-coords"] == coord][0], 'user-id'] \
+        for coord in coords
+    ]
+
+    return user_ids
 

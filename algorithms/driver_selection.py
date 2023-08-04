@@ -43,8 +43,6 @@ from database import *                              # all database functionality
 # temporary, testing
 import matplotlib.pyplot as plt                     # visualizing
 import pandas as pd                                 # dataframe
-from cost_testing import *                          # testing purposes
-from corporate_clustering import *                  # clustering help
 
 
 # ------ Dispatch ------ #
@@ -52,11 +50,11 @@ from corporate_clustering import *                  # clustering help
     This function dispatches the chosen method and returns the selected driver
     and the order of pickup given a cluster of user IDs.
 """
-def driver_selection(user_ids: np.ndarray) -> tuple[str, list]:
+def driver_selection(cluster_db: pd.DataFrame) -> list:
     # get params #
-    db_users = db_query_users(users=user_ids)
+    coords = cluster_db["location-coords"]
     dist_matrix = create_distance_matrix(coords)
-    driv_weights = driver_weights(driver_data=db_users)
+    driv_weights = driver_weights(driver_data=cluster_db)
 
     # dispatch #
     # NOTE: for now, nn for testing purposes while this file is in construction
@@ -71,6 +69,8 @@ def driver_selection(user_ids: np.ndarray) -> tuple[str, list]:
 """
     Wrapper function for the dynamic-programmming brute-force approach towards
     driver-selection within a constant size cluster.
+
+    TODO: implement weighting for the driver likelihood
 """
 def driver_selection_dp(coords: np.ndarray) -> list:
     # setup #
@@ -184,6 +184,9 @@ def driver_selection_nn(distance_matrix: np.ndarray, coordinates: np.ndarray, we
     non-drivers, this proportion will be `inf` since the lower the proportion,
     the lower the total "cost" is deemed to be and therefoer the higher the
     favorability to be driver is.
+
+    TODO: STILL WORK IN PROGRESS. Formula is almost finalized, just need to
+    transfer implementation
 """
 def driver_weights(driver_data: pd.DataFrame) -> dict:
     # setup #
