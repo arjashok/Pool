@@ -68,12 +68,57 @@ def driver_selection(user_ids: np.ndarray) -> tuple[str, list]:
 
 
 # ------ Brute-Force Permutation ------ #
-def driver_selection_dp(cluster: np.ndarray) -> tuple[str, list]:
-    pass
+"""
+    Wrapper function for the dynamic-programmming brute-force approach towards
+    driver-selection within a constant size cluster.
+"""
+def driver_selection_dp(coords: np.ndarray) -> list:
+    # setup #
+    # distance matrix
+    distance_matrix = create_distance_matrix(coords)
+
+    # consider all permutations
+    permutations = itertools.permutations(range(len(coords) - 1))
+
+
+    # get minimum path distance #
+    # storage
+    min_distance = float('inf')
+    optimal_path = []
+
+    # for each possible path
+    for path in permutations:
+        # consider current path
+        path = list(path)
+        path.append(len(coords) - 1)
+        cur_distance = find_path_distance(distance_matrix, path)
+
+        # choose min
+        if cur_distance < min_distance:
+            min_distance = cur_distance
+            optimal_path = path
+
+    # return optimal
+    return optimal_path
+
+
+"""
+    Auxiliary function for finding the distance between two coordinates in the
+    cluster.
+"""
+def find_path_distance(distance_matrix: np.ndarray, indices: list) -> float:
+    # return path distance #
+    dist_traveled = 0
+    for i in range(len(indices) - 1):
+        dist_traveled += get_dist(distance_matrix, indices[i], indices[i + 1])
+    return dist_traveled
 
 
 # ------ TSP Algo & Reversing ------ #
-def driver_selection_tsp(cluster: np.ndarray) -> tuple[str, list]:
+"""
+    Wrapper function for Traveling Salesman from destination to destination.
+"""
+def driver_selection_tsp(cluster: np.ndarray) -> list:
     pass
 
 
@@ -110,7 +155,7 @@ def driver_selection_nn(distance_matrix: np.ndarray, coordinates: np.ndarray, we
         # check each stop for nearest
         for stop in range(num_stops - 1):
             if stop not in visited:
-                dist = distance_matrix[driver][stop]
+                dist = get_dist(distance_matrix, driver, stop)
                 if dist < nearest_dist:
                     nearest_stop = stop
                     nearest_dist = dist
@@ -125,7 +170,7 @@ def driver_selection_nn(distance_matrix: np.ndarray, coordinates: np.ndarray, we
 
 
     # return final ordering #
-    return np.array(order)
+    return order
 
 
 # ------ Auxiliary Functions for Selection ------ #

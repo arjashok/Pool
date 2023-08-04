@@ -1,36 +1,14 @@
 """
-    Utility file that calculates the nearest neighbors given an n^2 matrix of
-    distances between each person when given a cluster of names.
+    Utility file regarding all methods used for visualizing the final paths,
+    clusters, and anything else of relevance to the Pool app.
 """
+
 
 # ------ Environment Setup ------ #
-import numpy as np                          # array manipulation
-import matplotlib.pyplot as plt             # visualizing path
+import matplotlib.pyplot as plt             # visualizing path, clusters
 
 
-# ------ Auxiliary Functions for Testing ------ #
-"""
-    Create a list of randomly generated coordinates, assuming within a certain
-    radius from one another. Since coordinates are domained as follows:
-        latitude: [-90, 90]
-        longitude: [-180, 180]
-    We will be using a multiplier to artifically boost range while maintaing a
-    static variable type of `float`. This multiplier is 10 for now since
-    coordinates only need 6 decimals of precision to be very accurate, while
-    floats in python can hold up to 8 digits of precision.
-"""
-def rand_coordinates(num_coords: int) -> np.ndarray:
-    # setup
-    MULTIPLIER = 10
-
-    # random x & y
-    x_arr = np.random.uniform(-90 * MULTIPLIER, 90 * MULTIPLIER, num_coords)
-    y_arr = np.random.uniform(-180 * MULTIPLIER, 180 * MULTIPLIER, num_coords)
-
-    # return zipped array
-    return np.array(list(zip(x_arr, y_arr)))
-
-
+# ------ Visualizing Results ------ #
 """
     Visualizes the path using a basic plotting approach. Order is set by the
     results of the algorithm.
@@ -99,5 +77,32 @@ def visualize_clusters(clusters: list) -> None:
     plt.legend()
     plt.grid(True)
     plt.savefig("../datasets/cluster.png")
+    plt.show()
+
+
+"""
+    Visualizes the clusters and the paths generated.
+"""
+def visualize_whole(paths):
+    # plotting #
+    # setup figure
+    plt.figure()
+    
+    # setup colors
+    colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k']
+        
+    # plot every point & path
+    for idx, path in enumerate(paths):
+        x = [point[0] for point in path]
+        y = [point[1] for point in path]
+        plt.plot(x, y, color=colors[idx % len(colors)], marker='o', label=f'Path {idx+1}')
+    
+    # labeling
+    plt.xlabel('X')
+    plt.ylabel('Y')
+    plt.title('Visualizing Paths')
+    plt.legend()
+    plt.grid(True)
+    plt.grid("../datasets/final_results.png")
     plt.show()
 

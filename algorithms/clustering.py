@@ -29,7 +29,7 @@
 
     This is the specialized clustering for groups of 50+ people.
     
-    # -- Driver Selection by Clustering -- #
+    # -- Clustering via Driver Selection -- #
     This is the specialized clustering for groups of 1 - 49 people.
     
     The assumption we can make with groups of 49 and below people is that car
@@ -55,5 +55,102 @@
     restrict this algorithm to only smaller groups for now.
 """
 
-# --------------------------------------------------------------------------- #
+
+# ----- Environment Setup ----- #
+# static libraries
+from sklearn.cluster import KMeans                  # clustering
+from scipy.spatial.distance import cdist            # Euclidean distance
+from scipy.optimize import linear_sum_assignment    # magic function lol
+import numpy as np                                  # array manipulation
+from distance import *                              # distance calculations
+
+# temporary, testing
+from cost_testing import *                          # testing purposes
+
+
+# ------ K-Means & Post-Processing ------ #
+"""
+    Final wrapped function that dispatches the appropriate clustering algorithm
+    as given by the size of the input population.
+"""
+def cluster(coords: np.ndarray, cluster_size: int) -> list:
+    # branch #
+    if len(coords) < 50:
+        return cluster_ds(coords=coords)
+    return cluster_kmeans(coords=coords, cluster_size=cluster_size)
+
+
+# ------ K-Means & Post-Processing ------ #
+"""
+    A wrapping function to make functions calls less repetitive in the final
+    app deployment. Returns a 2D list.
+"""
+def cluster_kmeans(coords: np.ndarray, cluster_size: int) -> list:
+    into_clusters = get_even_clusters(coords, cluster_size)
+    return group(into_clusters, coords, cluster_size)
+
+
+"""
+    High-level explanation:
+        The approach is essentially to use sklearns K-Means Clustering to find
+        the CENTROIDS that best represent the data. The idea from there is to
+        create a one-to-one mapping from a point to its closest centroid. This
+        is done first by repeating each centroid cluster_size time, such that a
+        maximum of cluster_size points can be mapped to a point.
+        
+        A distance matrix is then created from each point to each centroid.
+        From there, linear sum assignment is used. Through this process, the
+        optimal minimizing combination of points are associated with a centroid
+        (This has O(n^3) runtime).
+        
+        Remember, we repeated clusters. Therefore to remove the repeats and
+        find the overall cluster a point belongs to, perform floor division.
+        The runtime associated with linear sum assignment is the dominant term
+        meaning overall runtime is approx O(n^3).
+"""
+def get_even_clusters(coords: np.ndarray, cluster_size: int) -> np.ndarray:
+    # clustering #
+    n_clusters = int(np.ceil(len(coords) / cluster_size))
+    kmeans = KMeans(n_clusters)
+    kmeans.fit(coords)
+
+
+    # post-processing #
+    # process centroids
+    centers = kmeans.cluster_centers_
+    centers = (
+        centers.reshape(-1, 1, coords.shape[-1])
+        .repeat(cluster_size, 1)
+        .reshape(-1, coords.shape[-1])
+    )
+
+    # efficient distance
+    distance_matrix = cdist(coords, centers)
+
+    # magic
+    clusters = linear_sum_assignment(distance_matrix)[1] // cluster_size
+    
+    # return results
+    return clusters
+
+
+"""
+    Uses the information from get_even_clusters to actually cluster the coords
+    array.
+"""
+def group(clusters: np.ndarray, coords: np.ndarray, cluster_size: int) -> list:
+    # setup #
+    num_clusters = int(np.ceil(len(coords) / cluster_size))
+    groups = [[] for num in range(num_clusters)]
+
+
+    # associate coords w/ clusters
+    for idx, cluster in enumerate(clusters):
+        groups[cluster].append(coords[idx])
+    return groups
+
+
+# ----- Clustering via Driver Selection ----- #
+def cluster_ds(coords: np.ndarray) -> list:
+    pass
 
