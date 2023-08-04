@@ -1,6 +1,5 @@
 import googlemaps
 import config
-from datetime import datetime
 import numpy as np
 
 api_key = config.MAPS_API_KEY
@@ -22,7 +21,16 @@ def get_geo(address: str) -> tuple:
     return (coords_dict["lat"], coords_dict["lng"])
 
 
-def create_distance_matrix(addresses: np.ndarray) -> np.ndarray:
+def get_geo_array(addresses: np.ndarray) -> np.ndarray:
+    coords_array = np.empty(
+        addresses.shape[0], dtype=[("coord", "float64", 2), ("address", "U100")]
+    )
+    for i in range(addresses.shape[0]):
+        coords_array[i] = (get_geo(addresses[i]), addresses[i])
+    return coords_array
+
+
+def create_distance_matrix_address(addresses: np.ndarray) -> np.ndarray:
     # setup
     n = addresses.shape[0]
     matrix = np.zeros((n, n))

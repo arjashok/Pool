@@ -73,7 +73,7 @@ def create_distance_matrix(coordinates: np.ndarray) -> np.ndarray:
     for i in range(n):
         for j in range(0, i):
             dist = distance(coordinates[i], coordinates[j])
-            matrix[i, j] = dist
+            matrix[i][j] = dist
 
     # return 2D
     return np.array(matrix)
