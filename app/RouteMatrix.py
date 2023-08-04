@@ -17,6 +17,11 @@ def get_distance(origin: str, destination: str) -> int:
         return None
 
 
+def get_geo(address: str) -> tuple:
+    coords_dict = gmaps.geocode(address)[0]["geometry"]["location"]
+    return (coords_dict["lat"], coords_dict["lng"])
+
+
 def create_distance_matrix(addresses: np.ndarray) -> np.ndarray:
     # setup
     n = addresses.shape[0]
@@ -33,6 +38,7 @@ def create_distance_matrix(addresses: np.ndarray) -> np.ndarray:
     return matrix
 
 
+print(get_geo("9367 mediar drive San Ramon"))
 # addys = np.array(
 #     [
 #         "2009 Poinsettia Street San Ramon",
