@@ -28,7 +28,6 @@ def create_distance_matrix(addresses: np.ndarray) -> np.ndarray:
             dist = 2
             dist = get_distance(addresses[i], addresses[j])
             matrix[i][j] = dist
-            matrix[j][i] = dist
 
     # return 2D
     return matrix
