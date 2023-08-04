@@ -8,11 +8,11 @@ api_key = config.MAPS_API_KEY
 gmaps = googlemaps.Client(key=api_key)
 
 
-def get_distance(origin: str, destination: str) -> int:
+def get_duration(origin: str, destination: str) -> float:
     directions = gmaps.directions(origin, destination, mode="driving", units="metric")
     if len(directions) > 0:
-        distance = directions[0]["legs"][0]["distance"]["text"].split()[0]
-        return float(distance)
+        duration = directions[0]["legs"][0]["duration"]["text"].split()[0]
+        return float(duration)
     else:
         return None
 
@@ -31,7 +31,7 @@ def create_distance_matrix(addresses: np.ndarray) -> np.ndarray:
     for i in range(n):
         for j in range(0, i):
             dist = 2
-            dist = get_distance(addresses[i], addresses[j])
+            dist = get_duration(addresses[i], addresses[j])
             matrix[i][j] = dist
 
     # return 2D
