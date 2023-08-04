@@ -49,10 +49,10 @@ def cluster_distance(p1: tuple, p2: tuple) -> float:
 def get_dist(coordinates: np.ndarray, row: int, col: int) -> float:
     # check direct access
     if row >= col:
-        return coordinates[row, col]
+        return coordinates[row][col]
     
     # indirect access
-    return coordinates[col, row]
+    return coordinates[col][row]
 
 
 """
