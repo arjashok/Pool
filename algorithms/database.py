@@ -17,11 +17,10 @@
 # ----- Environment setup ----- #
 # static libraries
 import numpy as np                  # array manipulation
+from pymongo import MongoClient     # database
 
 # temporary
-import pandas as pd
-
-from pymongo import MongoClient    # database
+import pandas as pd                 # temp db
 
 
 # ------ Auxiliary Functions for Queries ------ #
@@ -36,6 +35,7 @@ def db_query_org_id(name: str) -> str:
 
     # query #
     return org_id
+
 
 """
     Get user info for a specified list of users using their designated ID.
@@ -55,7 +55,14 @@ def db_query_users(users: np.ndarray) -> pd.DataFrame:
     be matched as primary key to accomplish this.
 """
 def db_modify_users(users: pd.DataFrame) -> None:
-    pass
+    # check missing
+    if not "user-id" in users.columns:
+        print("Failed db update for failed column primary key `user-id`")
+        return None
+
+    # pandas deprecated
+    pool_db = db_load("na")
+    pool_db = pool_db.merge(users, on="user-id", how="left")
 
 
 # ------ Auxiliary Functions for DB Functionality ------ #
@@ -63,6 +70,14 @@ def db_modify_users(users: pd.DataFrame) -> None:
     Functionality for now to load in the database.
 """
 def db_load(database) -> pd.DataFrame:
+    # # deprecated #
+    # pool_db = pd.read_parquet(
+    #     "../datasets/poolDB.parquet",
+    #     engine = "fastparquet"
+    # )
+
+    # return pool_db
+
     # read & return #
     CONNECTION_STRING = "mongodb+srv://yashravipati:YAdPCgjsuicf8Qfq@pooldb.gcjiexs.mongodb.net/"
     client = MongoClient(CONNECTION_STRING)
@@ -72,10 +87,10 @@ def db_load(database) -> pd.DataFrame:
 """
     Functionality for now to save updates to the database.
 """
-def db_save(firebase_db: pd.DataFrame) -> None:
+def db_save(pool_db: pd.DataFrame) -> None:
     # save & end #
-    firebase_db = pd.to_parquet(
-        "../datasets/firebase.parquet",
+    pool_db = pd.to_parquet(
+        "../datasets/poolDB.parquet",
         engine = "fastparquet"
     )
 
@@ -94,6 +109,7 @@ def db_insert_org(name, userIDs) -> None:
         "user-ids": userIDs
     })
     return None
+
 
 """
     Insert a user into the database.
