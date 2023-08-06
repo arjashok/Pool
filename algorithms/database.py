@@ -64,6 +64,8 @@ def db_modify_users(users: pd.DataFrame) -> None:
     pool_db = db_load("na")
     pool_db = pool_db.merge(users, on="user-id", how="left")
 
+    return
+
 
 # ------ Auxiliary Functions for DB Functionality ------ #
 """
