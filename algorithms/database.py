@@ -14,16 +14,29 @@
     eventually implement.
 """
 
-
 # ----- Environment setup ----- #
 # static libraries
 import numpy as np                  # array manipulation
 
 # temporary
-import pandas as pd                 # temporary database location
+import pandas as pd
+
+from pymongo import MongoClient    # database
 
 
 # ------ Auxiliary Functions for Queries ------ #
+"""
+    Functionality to query an organization's id based on name
+"""
+def db_query_org_id(name: str) -> str:
+    # setup #
+    db = db_load("PoolData")
+    collection_name = db["Organizations"]
+    org_id = collection_name.find_one({"name": name})['_id']
+
+    # query #
+    return org_id
+
 """
     Get user info for a specified list of users using their designated ID.
 """
@@ -49,14 +62,11 @@ def db_modify_users(users: pd.DataFrame) -> None:
 """
     Functionality for now to load in the database.
 """
-def db_load() -> pd.DataFrame:
+def db_load(database) -> pd.DataFrame:
     # read & return #
-    firebase_db = pd.read_parquet(
-        "../datasets/firebase.parquet",
-        engine = "fastparquet"
-    )
-
-    return firebase_db
+    CONNECTION_STRING = "mongodb+srv://yashravipati:YAdPCgjsuicf8Qfq@pooldb.gcjiexs.mongodb.net/"
+    client = MongoClient(CONNECTION_STRING)
+    return client[database]
 
 
 """
@@ -71,3 +81,33 @@ def db_save(firebase_db: pd.DataFrame) -> None:
 
     return None
 
+"""
+    Functionality to insert a new organization into the database.
+"""
+def db_insert_org(name, userIDs) -> None:
+    # setup #
+    db = db_load("PoolData")
+    collection_name = db["Organizations"]
+    # insert #
+    collection_name.insert_one({
+        "name": name.lower(),
+        "user-ids": userIDs
+    })
+    return None
+
+"""
+    Insert a user into the database.
+"""
+def db_insert_user(name, email, orgName) -> None:
+    # setup #
+    db = db_load("PoolData")
+    collection_name = db["Users"]
+    # insert #
+    collection_name.insert_one({
+        "name": name.lower(),
+        "email": email.lower(),
+        "org-id": db_query_org_id(orgName.lower())
+    })
+    return None
+
+db_insert_user("Coconut Sniffer", "noahantisseril@gmail.com", "test")
