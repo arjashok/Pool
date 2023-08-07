@@ -22,6 +22,7 @@ import numpy as np                  # array manipulation
 import pandas as pd
 
 from pymongo import MongoClient    # database
+from MapsAPI import *               # maps API
 
 
 # ------ Auxiliary Functions for Queries ------ #
@@ -98,16 +99,19 @@ def db_insert_org(name, userIDs) -> None:
 """
     Insert a user into the database.
 """
-def db_insert_user(name, email, orgName) -> None:
+def db_insert_user(name, email, orgName, address) -> None:
     # setup #
     db = db_load("PoolData")
     collection_name = db["Users"]
+    geo_code = get_geo(address)
     # insert #
     collection_name.insert_one({
         "name": name.lower(),
         "email": email.lower(),
-        "org-id": db_query_org_id(orgName.lower())
+        "org-id": db_query_org_id(orgName.lower()),
+        "address": address.lower(),
+        "geo": geo_code,
     })
     return None
 
-db_insert_user("Coconut Sniffer", "noahantisseril@gmail.com", "test")
+db_insert_user("Coconut Sniffer", "noahantisseril@gmail.com", "test", "Fitness 19 Dublin")
