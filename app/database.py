@@ -23,6 +23,7 @@ import pandas as pd
 
 from pymongo import MongoClient  # database
 from MapsAPI import *  # maps API
+from config import *  # API keys
 
 
 # ------ Auxiliary Functions for Queries ------ #
@@ -91,10 +92,7 @@ def db_load(database) -> pd.DataFrame:
     # return pool_db
 
     # read & return #
-    CONNECTION_STRING = (
-        "mongodb+srv://yashravipati:YAdPCgjsuicf8Qfq@pooldb.gcjiexs.mongodb.net/"
-    )
-    client = MongoClient(CONNECTION_STRING)
+    client = MongoClient(config.CONNECTION_STRING)
     return client[database]
 
 
