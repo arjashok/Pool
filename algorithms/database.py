@@ -23,6 +23,13 @@ import numpy as np  # array manipulation
 import pandas as pd
 
 from pymongo import MongoClient  # database
+import sys
+import os
+
+app_dir_path = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "../app")
+)
+sys.path.append(app_dir_path)
 from MapsAPI import *  # maps API
 from config import *  # API keys
 
