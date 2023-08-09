@@ -61,8 +61,6 @@ def db_query_users(users: np.ndarray) -> pd.DataFrame:
     columns will be modified to match the inputted dataframe. The user-ids will
     be matched as primary key to accomplish this.
 """
-
-
 def db_modify_users(users: pd.DataFrame) -> None:
     # check missing
     if not "user-id" in users.columns:
@@ -72,6 +70,7 @@ def db_modify_users(users: pd.DataFrame) -> None:
     # pandas deprecated
     pool_db = db_load("na")
     pool_db = pool_db.merge(users, on="user-id", how="left")
+    db_save(pool_db)
 
     return
 
@@ -80,8 +79,6 @@ def db_modify_users(users: pd.DataFrame) -> None:
 """
     Functionality for now to load in the database.
 """
-
-
 def db_load(database) -> pd.DataFrame:
     # # deprecated #
     # pool_db = pd.read_parquet(
@@ -99,8 +96,6 @@ def db_load(database) -> pd.DataFrame:
 """
     Functionality for now to save updates to the database.
 """
-
-
 def db_save(pool_db: pd.DataFrame) -> None:
     # save & end #
     pool_db = pd.to_parquet("../datasets/poolDB.parquet", engine="fastparquet")
@@ -111,40 +106,47 @@ def db_save(pool_db: pd.DataFrame) -> None:
 """
     Functionality to insert a new organization into the database.
 """
-
-
-def db_insert_org(name, userIDs) -> None:
+def db_create_org(name, adminIDs) -> None:
     # setup #
     db = db_load("PoolData")
     collection_name = db["Organizations"]
     # insert #
-    collection_name.insert_one({"name": name.lower(), "user-ids": userIDs})
+    collection_name.insert_one({"name": name.lower(), "admin-ids": adminIDs})
     return None
 
 
 """
     Insert a user into the database.
 """
-
-
-def db_insert_user(name, email, orgName, address) -> None:
+def db_create_user(name, email, address) -> None:
     # setup #
     db = db_load("PoolData")
     collection_name = db["Users"]
     geo_code = get_geo(address)
     # insert #
+    try:
+        collection_name.insert_one(
+            {
+                "name": name.lower(),
+                "email": email.lower(),
+                "address": address.lower(),
+                "geo": geo_code,
+            }
+        )
+    except:
+        print("Failed to insert user into database")
+    return None
+
+def db_create_event(name, orgID, location):
+    # setup #
+    db = db_load("PoolData")
+    collection_name = db["Events"]
+    # insert #
     collection_name.insert_one(
         {
             "name": name.lower(),
-            "email": email.lower(),
-            "org-id": db_query_org_id(orgName.lower()),
-            "address": address.lower(),
-            "geo": geo_code,
+            "org-id": orgID,
+            "location": location.lower(),
         }
     )
     return None
-
-
-db_insert_user(
-    "Coconut Sniffer", "noahantisseril@gmail.com", "test", "Fitness 19 Dublin"
-)
