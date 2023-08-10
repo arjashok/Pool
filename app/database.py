@@ -307,5 +307,3 @@ def db_create_event_pd(entry: pd.DataFrame) -> None:
     except Exception as e:
         print("Failed to insert event: ", e)
     return None
-
-db_create_user("Noah", "bob@gmail.com", "Fitness 19 Dublin", "password1234")
