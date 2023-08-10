@@ -72,10 +72,10 @@ def driver_selection(cluster_db: pd.DataFrame) -> list:
 
     TODO: implement weighting for the driver likelihood
 """
-def driver_selection_dp(coords: np.ndarray) -> list:
+def driver_selection_dp(coords: np.ndarray, distance_matrix: np.ndarray) -> list:
     # setup #
     # distance matrix
-    distance_matrix = create_distance_matrix(coords)
+    # distance_matrix = create_distance_matrix(coords)
 
     # consider all permutations
     permutations = itertools.permutations(range(len(coords) - 1))

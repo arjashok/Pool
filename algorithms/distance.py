@@ -49,10 +49,10 @@ def cluster_distance(p1: tuple, p2: tuple) -> float:
 def get_dist(coordinates: np.ndarray, row: int, col: int) -> float:
     # check direct access
     if row >= col:
-        return coordinates[row, col]
+        return coordinates[row][col]
     
     # indirect access
-    return coordinates[col, row]
+    return coordinates[col][row]
 
 
 """
@@ -73,7 +73,7 @@ def create_distance_matrix(coordinates: np.ndarray) -> np.ndarray:
     for i in range(n):
         for j in range(0, i):
             dist = distance(coordinates[i], coordinates[j])
-            matrix[i, j] = dist
+            matrix[i][j] = dist
 
     # return 2D
     return np.array(matrix)
