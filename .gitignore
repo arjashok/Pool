@@ -160,6 +160,7 @@ cython_debug/
 
 # API Keys/Config
 config.py
+firebase_key.json
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
