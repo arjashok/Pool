@@ -2,7 +2,15 @@ import React, {useContext, useState, useEffect} from "react";
 import { auth } from "../firebase";
 import { createUserWithEmailAndPassword, User as FirebaseUser, onAuthStateChanged } from "firebase/auth";
 
-const AuthContext = React.createContext({});
+type AuthContextType = {
+    currentUser: FirebaseUser | null;
+    signup: (email: string, password: string) => Promise<unknown>;
+};
+
+const AuthContext = React.createContext<AuthContextType>({
+    currentUser: null,
+    signup: (email: string, password: string) => createUserWithEmailAndPassword(auth, email, password),
+});
 
 export function useAuth() {
     return useContext(AuthContext);
@@ -18,10 +26,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, user => {
             setCurrentUser(user);
-        })
+        });
 
-        return unsubscribe;
-    }, [])
+        return () => {
+            unsubscribe();
+        };
+    }, []);
+
     onAuthStateChanged(auth, user => {
         setCurrentUser(user);
     })
@@ -30,6 +41,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         currentUser,
         signup
     };
+    
     return (
         <AuthContext.Provider value={value}>
             {children}
