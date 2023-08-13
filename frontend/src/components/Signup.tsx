@@ -6,10 +6,9 @@ export default function Signup() {
     const emailRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
     const passwordConfirmRef = useRef<HTMLInputElement>(null);
-    const { signup, currentUser } = useAuth();
+    const { signup } = useAuth();
     const [error, setError] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
-
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
 
@@ -32,7 +31,6 @@ export default function Signup() {
             <Card>
                 <Card.Body>
                     <h2 className="text-center mb-4">Sign Up</h2>
-                    {currentUser && currentUser.email}
                     {error && <Alert variant="danger">{error}</Alert>}
                     <Form onSubmit={handleSubmit}>
                         <Form.Group className="mt-2" id="email">
