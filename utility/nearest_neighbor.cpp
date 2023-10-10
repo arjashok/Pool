@@ -10,7 +10,6 @@
 
 using namespace std;            // I ain't typing std:: 50000 times bruh
 
-
 /** Auxiliary Functions **/
 float distance(pair<float, float> p1, pair<float, float> p2)
 {
